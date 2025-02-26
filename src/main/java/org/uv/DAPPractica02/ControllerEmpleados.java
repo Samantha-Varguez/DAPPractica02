@@ -4,6 +4,7 @@ package org.uv.DAPPractica02;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,14 +17,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-/**
- *
- * @author samantha
- */
 @RestController
 @RequestMapping("/empleados")
 public class ControllerEmpleados {
     
+    // singleton
     @Autowired
 RepositoryEmpleados repositoryEmpleado;
     
@@ -33,18 +31,26 @@ RepositoryEmpleados repositoryEmpleado;
     }
     
     @GetMapping("/{id}")
-    public Empleado get(@PathVariable String id) {
+    public Empleado get(@PathVariable long id) {
+        
+       Optional<Empleado> resEmp = repositoryEmpleado.findById(id);
+       if (resEmp.isPresent())
+           return resEmp.get();
+       else
         return null;
     }
-    
+    // terminar put y delete 
     @PutMapping("/{id}")
     public ResponseEntity<?> put(@PathVariable String id, @RequestBody Object input) {
+        
         return null;
     }
     
     @PostMapping
-    public ResponseEntity<?> post(@RequestBody Object input) {
-        return null;
+    public ResponseEntity<Empleado> post(@RequestBody Empleado entrada) {
+        
+        Empleado empNew= repositoryEmpleado.save(entrada);
+        return ResponseEntity.ok(empNew);
     }
     
     @DeleteMapping("/{id}")
