@@ -39,9 +39,21 @@ RepositoryEmpleados repositoryEmpleado;
     }
     // terminar put y delete 
     @PutMapping("/{id}")
-    public ResponseEntity<?> put(@PathVariable String id, @RequestBody Object input) {
+    public ResponseEntity<?> put(@PathVariable long id, @RequestBody Empleado empleado) {
+        Optional<Empleado> resEmp = repositoryEmpleado.findById(id);
+        if (!resEmp.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            
+        }
+        Empleado empleadoExisted = resEmp.get();
+        empleadoExisted.setNombre(empleado.getNombre());
+        empleadoExisted.setTelefono(empleado.getTelefono());
+        empleadoExisted.setDireccion(empleado.getDireccion());
         
-        return null;
+        repositoryEmpleado.save(empleadoExisted);
+        
+               
+        return new ResponseEntity<>(empleadoExisted, HttpStatus.OK);
     }
     
     @PostMapping
@@ -52,8 +64,14 @@ RepositoryEmpleados repositoryEmpleado;
     }
     
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable String id) {
-        return null;
+    public ResponseEntity<Empleado> delete(@PathVariable long id) {
+        Optional<Empleado> emp = repositoryEmpleado.findById(id);
+        if (!emp.isPresent()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        repositoryEmpleado.deleteById(id);
+        
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     
     @ExceptionHandler(Exception.class)
