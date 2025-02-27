@@ -1,4 +1,3 @@
-
 package org.uv.DAPPractica02;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -20,8 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @RestController
 @RequestMapping("/empleados")
 public class ControllerEmpleados {
-    
-    // singleton
+     // singleton
     @Autowired
 RepositoryEmpleados repositoryEmpleado;
     
@@ -31,13 +29,13 @@ RepositoryEmpleados repositoryEmpleado;
     }
     
     @GetMapping("/{id}")
-    public Empleado get(@PathVariable long id) {
+    public ResponseEntity<Empleado> get(@PathVariable long id) {
         
-       Optional<Empleado> resEmp = repositoryEmpleado.findById(id);
-       if (resEmp.isPresent())
-           return resEmp.get();
-       else
-        return null;
+       Optional<Empleado> emp = repositoryEmpleado.findById(id);
+       if (!emp.isPresent()){
+           return ResponseEntity.notFound().build();
+       }
+        return ResponseEntity.ok(emp.get());
     }
     // terminar put y delete 
     @PutMapping("/{id}")
